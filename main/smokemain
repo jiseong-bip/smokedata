@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+#  Rev 1.0 2020-02-21
+#
+
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin sensorHome="/home/$DEVICEID"
+
+function readSmokeData(){
+    #multiple field seperator encompassed with '
+    timeout 150s gawk -v deviceID="$DEVICEID" -F'[-: ]' 'length
+    # beginning of AWK
+    {	
+	#print $1 > "/dev/stdout"
+	if ($1 == "[D]"){
+		printf strftime("%Y-%m-%d %H:%M ") > "tempfile"
+                printf strftime("%m%d_%y.txt") > "filename"
+		printf  "%s\n", $0 > "tempfile"
+		system("insertSmoke "strftime("%Y-%m-%d %H:%M")" "deviceID" "$2" "$4)
+		close ("filename")
+                close ("tempfile")
+		exit
+	}
+    }' /dev/serial0
+}
+
+
+#
+# beginning of SDMSMAIN
+#
+
+echo device id: $DEVICEID  site id: $SITEID
+echo device directory: $sensorHome
+
+while true; do
+    cd /usr/local/bin
+    rm -f "tempfile"
+    readSmokeData
+    if [ -s "tempfile" ]; then
+	_filename=`cat filename`
+        rm -f filename
+	cat "tempfile" >> $sensorHome/data/$_filename
+    fi
+done

@@ -1,0 +1,3 @@
+kills
+TERM=linux minicom -w smoke
+startmain

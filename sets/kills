@@ -1,0 +1,2 @@
+pkill -9 smokemain
+pkill -9 awk

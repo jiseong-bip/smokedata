@@ -1,0 +1,4 @@
+
+### 1 ~ 5 -> / Date / Time / Site / sData / Level / 
+
+echo "insert into tbl_smoke values('$1 $2','$3','$4','$5');" | mysql -h $dbHost -P $dbPort -u $dbUser -p$dbPwd $dbName
